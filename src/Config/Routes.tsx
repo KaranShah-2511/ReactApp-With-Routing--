@@ -1,8 +1,17 @@
 import { lazy } from 'react';
 import type { RouteProps } from '../Core/Components/Routes';
-import { Dashboard  } from '../Component';
+import { Dashboard } from '../Component';
+import { NotFound } from '../Component/Error';
+
+const comman: RouteProps[] = [
+    {
+        path: '/404',
+        element: NotFound,
+    }
+];
 
 const app: RouteProps[] = [
+
     {
         path: '/',
         to: 'dashboard',
@@ -20,9 +29,9 @@ const app: RouteProps[] = [
         path: '/dashboard/*',
         element: Dashboard,
         private: true
-      },
+    },
 ]
 
-const routes = { app };
+const routes = { app, comman };
 
 export default routes;

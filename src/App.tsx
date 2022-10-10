@@ -13,7 +13,7 @@ function App() {
     <Routes
       location={location}
       redirect="/login"
-      routes={[...routes['app']]}
+      routes={[...routes['app'], ...routes['comman']]}
       isAuthorized={auth.isAuthorized()}
       // isAuthorized={true}
       notFound="/404"
