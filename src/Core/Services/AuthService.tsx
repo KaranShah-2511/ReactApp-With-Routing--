@@ -30,23 +30,23 @@ const AuthService = (function () {
 
         get() {
             // return Storage().get(_STORAGE_KEY);
-            return localStorage.getItem(_STORAGE_KEY);
+            const userData: any = localStorage.getItem(_STORAGE_KEY);
+            return JSON.parse(userData);
         }
 
         getUser(): User {
             const auth = this.get();
             if (auth && auth != null) {
-                // if (diff(auth.expires) > 0) {
-                //     return new User(auth.user);
-                // } else {
-                //     // Storage().delete(_STORAGE_KEY);
-                //     localStorage.removeItem(_STORAGE_KEY);
-                //     return new User();
-                // }
-                localStorage.removeItem(_STORAGE_KEY);
-                return new User();
+                if (diff(auth.expires) > 0) {
+                    return new User(auth.user);
+                } else {
+                    // Storage().delete(_STORAGE_KEY);
+                    localStorage.removeItem(_STORAGE_KEY);
+                    return new User();
+                }
+                // localStorage.removeItem(_STORAGE_KEY);
+                // return new User();
             } else {
-                // Storage().delete(_STORAGE_KEY);
                 localStorage.removeItem(_STORAGE_KEY);
                 return new User();
             }
@@ -63,9 +63,9 @@ const AuthService = (function () {
                     user: data,
                     expires: expires
                 };
-
+                const userData = localStorage.setItem(_STORAGE_KEY, JSON.stringify(auth));
                 // Storage().set(_STORAGE_KEY, auth);
-                localStorage.setItem(_STORAGE_KEY, auth);
+                // localStorage.setItem(_STORAGE_KEY, auth);
                 const user = this.getUser();
                 if (user._id) {
                     resolve(user);

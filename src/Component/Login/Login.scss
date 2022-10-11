@@ -1,0 +1,28 @@
+.login-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: auto;
+    height: 100vh;
+
+    .password-field {
+        position: relative;
+
+        svg {
+          position: absolute;
+          top: 9px;
+          right: 15px;
+          color: var(--app-gray-500);
+          font-size: 22px;
+        }
+
+        .open {
+          color: var(--app-input-border-focus);
+        }
+
+        .toggler {
+          cursor: pointer;
+        }
+      }
+
+}
