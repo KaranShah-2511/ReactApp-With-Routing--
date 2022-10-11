@@ -1,0 +1,54 @@
+.navigation {
+    display: flex;
+    align-items: center;
+
+    .nav-item {
+        width: 85%;
+        display: flex;
+        align-items: center;
+
+        ul {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 0;
+            margin-top: 0;
+
+            li {
+                text-decoration: none;
+                list-style: none;
+                padding: 20px;
+
+                a {
+                    text-decoration: none;
+                    color: black;
+                }
+
+                .filter-search-input {
+                    position: relative;
+
+                    .search-btn {
+                        position: absolute;
+                        top: 46%;
+                        transform: translateY(-50%);
+                        left: 15px;
+                        color: #50a7f0;
+                        font-size: 20px;
+                        padding: 0;
+                        background: transparent;
+                        margin: 0;
+                        border: 0;
+                    }
+
+                    input {
+                        padding-left: 45px;
+                    }
+                }
+            }
+        }
+
+
+
+    }
+
+
+}

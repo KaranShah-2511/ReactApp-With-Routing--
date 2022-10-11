@@ -4,13 +4,17 @@ import * as yup from 'yup';
 import { LoginParam, UserService } from '../../Services/UserService';
 import { Col, Form, Row, Button, Spinner, ToastContainer, Toast } from 'react-bootstrap';
 import { BsEye, BsEyeSlash } from "react-icons/bs";
+import { Auth } from '../../Core/Services/AuthService';
 import './Login.scss';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Login() {
   const EMAIL_REGEX: any = process.env.REACT_APP_EMAIL_REGEX || '';
   const userService = new UserService();
   const [showPassword, setShowPassword] = useState<boolean>(false);
-
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = (location.state as { from: any })?.from?.pathname || "/dashboard";
   const onPasswordVisiblity = () => {
     setShowPassword(!showPassword);
   };
@@ -32,7 +36,9 @@ function Login() {
     };
     await userService.login(payload)
       .then((res) => {
-        console.log('res', res)
+        Auth.setUser(res).then(() => {
+          navigate(from, { replace: true });
+        }).catch(() => { });
       })
       .catch((e) => {
         console.log('e', e)
@@ -54,8 +60,8 @@ function Login() {
 
   return (
     <div className='login-container'>
-      <Row>
-        <Col>
+      <Row className='shadow p-3 mb-5 bg-white rounded login-box'>
+        <Col className='login'>
           <Formik {...formlik}>
             {({ handleSubmit, handleChange, touched, values, isSubmitting, errors }) => (
               <Form onSubmit={handleSubmit}>
@@ -90,7 +96,7 @@ function Login() {
                   </div>
                 </Form.Group>
 
-                <Button variant="success" type="submit" disabled={isSubmitting}>
+                <Button variant="success" type="submit" disabled={isSubmitting} className="login-button">
                   Login to Continue
                   {(isSubmitting) ? <Spinner className="spinner" animation="border" size="sm" /> : null}
                 </Button>
@@ -100,6 +106,7 @@ function Login() {
             )}
           </Formik>
         </Col>
+     
       </Row>
 
     </div>

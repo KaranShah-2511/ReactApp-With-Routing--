@@ -1,28 +1,49 @@
-.login-container{
+.login-container {
     display: flex;
     align-items: center;
     justify-content: center;
     width: auto;
     height: 100vh;
+    background-color: #f5f5f5;
+    background-image: url(../../Assets/Images/DSC_0245.JPG);
+    background-repeat: no-repeat;
+    background-size: cover;
+
+    .login-box {
+        height: 50%;
+        width: 30%;
+        background-color: aqua;
+
+        .login{
+            background-color: gainsboro;
+            border-radius: 5px;
+            padding: 20px;
+        }
+
+        .login-button {
+            float: right;
+            margin-top: 35px;
+        }
+    }
 
     .password-field {
         position: relative;
 
         svg {
-          position: absolute;
-          top: 9px;
-          right: 15px;
-          color: var(--app-gray-500);
-          font-size: 22px;
+            position: absolute;
+            top: 9px;
+            right: 15px;
+            color: var(--app-gray-500);
+            font-size: 22px;
         }
 
         .open {
-          color: var(--app-input-border-focus);
+            color: var(--app-input-border-focus);
         }
 
         .toggler {
-          cursor: pointer;
+            cursor: pointer;
         }
-      }
+    }
 
 }

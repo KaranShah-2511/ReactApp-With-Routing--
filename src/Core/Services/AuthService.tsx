@@ -38,7 +38,7 @@ const AuthService = (function () {
             const auth = this.get();
             if (auth && auth != null) {
                 if (diff(auth.expires) > 0) {
-                    return new User(auth.user);
+                    return new User(auth.user[0]);
                 } else {
                     // Storage().delete(_STORAGE_KEY);
                     localStorage.removeItem(_STORAGE_KEY);

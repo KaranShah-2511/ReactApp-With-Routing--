@@ -50,4 +50,18 @@ export class UserService {
                 .catch((e) => reject(e));
         });
     }
+
+    getAllPost(params: LoginParam): Promise<User> {
+        return new Promise((resolve, reject) => {
+            Http.post('/post', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
 }
