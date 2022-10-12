@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Deshboard() {
+function History() {
   return (
     <div>
-      Deshboard
+      History
     </div>
   )
 }
 
-export default Deshboard
+export default History

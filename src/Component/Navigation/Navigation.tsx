@@ -38,7 +38,7 @@ function Navigation() {
             </Link>
           </li>
           <li>
-            <Link to="/">History</Link>
+            <Link to="/history">History</Link>
           </li>
         </ul>
       </div>
