@@ -40,6 +40,7 @@ export class Post extends MyModelEntity {
     name: string;
     email: string;
     count: string;
+    isLiked: number;
 
     constructor(data?: any) {
         super(data);
@@ -68,7 +69,22 @@ export class UserService {
 
     getAllPost(params?: SearchParam): Promise<Post[]> {
         return new Promise((resolve, reject) => {
-            Http.post('post/getallpost',params)
+            Http.post('post/getallpost', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+
+    getSinglePost(id: string | number): Promise<Post> {
+        return new Promise((resolve, reject) => {
+            const url = ['post/singlepost', id].join('/');
+            Http.get(url)
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);

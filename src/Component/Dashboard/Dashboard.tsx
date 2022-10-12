@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import { Button } from 'react-bootstrap';
 import { Post, SearchParam, UserService } from '../../Services/UserService';
 import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai';
-
-
+import { useNavigate } from 'react-router-dom';
 import './Dashboard.scss'
 
 function Dashboard() {
   const [search, setSearch] = useState('');
   const [post, setPost] = useState<Post[]>([]);
   const userServices = new UserService();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getallPost()
@@ -29,6 +29,11 @@ function Dashboard() {
     });
 
   };
+
+  const viewPost = (id) => {
+    navigate(`/post/${id}`, { replace: true });
+  }
+  
   return (
     <>
       <div className='dash-container'>
@@ -48,24 +53,22 @@ function Dashboard() {
         {post.map((item, index) => {
           const tag: any = item.tags;
           return (
-            <div className="card" key={index}>
+            <div className="card" key={index} onClick={() => viewPost(item._id)}>
               <div className="card__header">
                 <img src="https://source.unsplash.com/600x400/?computer" alt="card__image" className="card__image" width="600" />
               </div>
               <div className="card__body">
                 <div className="tag-div">
                   {
-                    tag.map((item, index) => {
+                    tag.map((item, i) => {
                       return (
                         <>
-                          <span className="tag tag-blue" key={index}> {item} </span>
+                          <span className="tag tag-blue" key={i}> {item} </span>
                         </>
                       )
                     })
                   }
-
                 </div>
-
                 <h4>{item.title}</h4>
                 <p className='discription'>{item.description}</p>
               </div>
@@ -77,7 +80,6 @@ function Dashboard() {
                   <div className="div">
                     {item.likes}
                   </div>
-
                 </div>
                 <div className="dislike">
                   <AiOutlineDislike />
@@ -103,48 +105,7 @@ function Dashboard() {
               </div>
             </div>
           )
-        }
-        )
-        }
-
-        {/* <div className="card">
-          <div className="card__header">
-            <img src="https://source.unsplash.com/600x400/?food" alt="card__image" className="card__image" width="600" />
-          </div>
-          <div className="card__body">
-            <span className="tag tag-brown">Food</span>
-            <h4>Delicious Food</h4>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi perferendis molestiae non nemo doloribus. Doloremque, nihil! At ea atque quidem!</p>
-          </div>
-          <div className="card__footer">
-            <div className="user">
-              <img src="https://i.pravatar.cc/40?img=2" alt="user__image" className="user__image" />
-              <div className="user__info">
-                <h5>Jony Doe</h5>
-                <small>Yesterday</small>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="card">
-          <div className="card__header">
-            <img src="https://source.unsplash.com/600x400/?car,automobile" alt="card__image" className="card__image" width="600" />
-          </div>
-          <div className="card__body">
-            <span className="tag tag-red">Automobile</span>
-            <h4>Race to your heart content</h4>
-            <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Sequi perferendis molestiae non nemo doloribus. Doloremque, nihil! At ea atque quidem!</p>
-          </div>
-          <div className="card__footer">
-            <div className="user">
-              <img src="https://i.pravatar.cc/40?img=3" alt="user__image" className="user__image" />
-              <div className="user__info">
-                <h5>John Doe</h5>
-                <small>2d ago</small>
-              </div>
-            </div>
-          </div>
-        </div> */}
+        })}
       </div>
     </>
 
