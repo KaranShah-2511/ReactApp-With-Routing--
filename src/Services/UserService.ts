@@ -10,6 +10,17 @@ export type LoginParam = {
 export type SearchParam = {
     Searchby: string;
 }
+export type Bookmark = {
+    userId: string | number;
+    postId: string | number;
+    isBookmark: boolean;
+}
+
+export type LikePost = {
+    likedBy: string | number;
+    postId: string | number;
+    status: number;
+}
 
 export class User extends MyModelEntity {
 
@@ -41,6 +52,7 @@ export class Post extends MyModelEntity {
     email: string;
     count: string;
     isLiked: number;
+    isBookmarked: boolean
 
     constructor(data?: any) {
         super(data);
@@ -95,4 +107,34 @@ export class UserService {
                 .catch((e) => reject(e));
         });
     }
+
+    bookmark(params: Bookmark): Promise<any> {
+        return new Promise((resolve, reject) => {
+            Http.post('post/bookmark', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+
+    LikePost(params: LikePost, id: string | number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const url = ['/post/likepost', id].join('/');
+            Http.post(url, params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+
 }
