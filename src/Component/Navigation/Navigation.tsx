@@ -40,10 +40,13 @@ function Navigation() {
           <li>
             <Link to="/history">History</Link>
           </li>
+          <li>
+            <Link to="/">Bookmarks</Link>
+          </li>
         </ul>
       </div>
       <div>
-        <Button onClick={ () => handelAction()}>LogOut</Button>
+        <Button onClick={() => handelAction()}>LogOut</Button>
       </div>
 
     </div>
