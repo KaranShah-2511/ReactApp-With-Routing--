@@ -25,7 +25,7 @@ export class Post extends MyModelEntity {
 
     _id: string | number;
     title: string;
-    description: string;
+    description: any;
     tags: string;
     createdBy: string;
     created: string;

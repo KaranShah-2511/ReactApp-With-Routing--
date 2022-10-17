@@ -3,14 +3,13 @@ import React from 'react'
 import { useState, useEffect } from "react";
 import { Button } from 'react-bootstrap';
 import { PostServices, Post, SearchParam, } from '../../Services/PostServices';
-import { AiOutlineDislike, AiOutlineLike } from 'react-icons/ai';
 import { useNavigate } from 'react-router-dom';
 import './Dashboard.scss'
 import { PostCard } from '../../Model';
 
 function Dashboard() {
   const [search, setSearch] = useState('');
-  const [post, setPost] = useState<Post[]>([]);
+  const [allPost, setAllPost] = useState<Post[]>([]);
   const postServices = new PostServices();
   const navigate = useNavigate();
 
@@ -24,7 +23,7 @@ function Dashboard() {
     }
 
     await postServices.getAllPost(param).then((data) => {
-      setPost(data);
+      setAllPost(data);
     }).catch((e) => {
       console.log('e', e)
     });
@@ -50,8 +49,8 @@ function Dashboard() {
         </div>
       </div>
 
-      <PostCard post={post} />
-    
+      <PostCard post={allPost} />
+
     </>
 
   )

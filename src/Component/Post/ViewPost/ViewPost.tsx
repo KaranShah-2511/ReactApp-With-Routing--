@@ -144,7 +144,6 @@ function ViewPost() {
             console.log('e', e)
         })
     };
-
     return (
         <div className='post-view'>
             <ToastContainer className="p-3" position="top-center">
@@ -177,7 +176,7 @@ function ViewPost() {
                                     onClick={handleClick}
                                     size="small"
                                     sx={{ ml: 2 }}
-                                    aria-controls={open ? 'account-menu' : undefined}
+                                    aria-controls={open ? 'Post Setting' : undefined}
                                     aria-haspopup="true"
                                     aria-expanded={open ? 'true' : undefined}
                                 >
@@ -217,7 +216,7 @@ function ViewPost() {
                                     Report
                                 </MenuItem>
                                 :
-                                (<>
+                                (<div>
                                     <Divider />
                                     <MenuItem onClick={() => deltePost(post._id)}  >
                                         <ListItemIcon >
@@ -234,7 +233,7 @@ function ViewPost() {
                                             Open Report Request
                                         </MenuItem>
                                         : ''}
-                                </>
+                                </div>
                                 )
                             }
                         </Menu>
@@ -317,9 +316,10 @@ function ViewPost() {
                 <img src="https://images.pexels.com/photos/2565919/pexels-photo-2565919.jpeg?cs=srgb&dl=pexels-sanni-sahil-2565919.jpg&fm=jpg" alt="card__image" className="card__image" width="100%" />
             </div>
             <div className="description">
-                <p>
-                    {post?.description}
-                </p>
+
+                {/* {JSON.parse(post?.description)} */}
+
+                <div dangerouslySetInnerHTML={{ __html: post?.description }} />
             </div>
         </div>
     )

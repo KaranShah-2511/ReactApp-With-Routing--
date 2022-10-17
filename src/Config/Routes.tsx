@@ -1,6 +1,6 @@
 import { lazy } from 'react';
 import type { RouteProps } from '../Core/Components/Routes';
-import { Dashboard, History, ViewPost } from '../Component';
+import { Bookmark, CreatePost, Dashboard, History, ViewPost } from '../Component';
 import { NotFound } from '../Component/Error';
 
 const comman: RouteProps[] = [
@@ -31,6 +31,11 @@ const app: RouteProps[] = [
         private: true
     },
     {
+        path: '/newpost/',
+        element: CreatePost,
+        private: true
+    },
+    {
         path: '/post/:postId',
         element: ViewPost,
         private: true
@@ -43,6 +48,11 @@ const app: RouteProps[] = [
     {
         path: '/history',
         element: History,
+        private: true
+    },
+    {
+        path: '/bookmark',
+        element: Bookmark,
         private: true
     },
 ]

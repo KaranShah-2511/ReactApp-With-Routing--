@@ -5,3 +5,5 @@ export { default as Navigation } from "./Navigation";
 export { default as NotFound } from "./Error/NotFound";
 export { default as History } from "./History";
 export { default as ViewPost } from "./Post/ViewPost";
+export { default as Bookmark } from "./Bookmark";
+export { default as CreatePost } from "./Post/CreatePost";

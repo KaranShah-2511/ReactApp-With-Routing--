@@ -5,9 +5,14 @@ import moment from 'moment';
 import { Post } from '../../Services/PostServices';
 import './PostCard.scss'
 
+type PostProps = {
+  post: Post[]
+};
 
-function PostCard(post: any) {
+function PostCard(props: PostProps) {
   const navigate = useNavigate();
+  const newpost = props.post;
+  console.log('newpost', newpost)
 
   const viewPost = (id) => {
     navigate(`/post/${id}`, { replace: true });
@@ -16,7 +21,7 @@ function PostCard(post: any) {
 
   return (
     <div className="container">
-      {post.post.map((item, index) => {
+      {newpost.map((item, index) => {
         const tag: any = item.tags;
         return (
           <div className="card" key={Math.random()} onClick={() => viewPost(item._id)}>
@@ -36,7 +41,8 @@ function PostCard(post: any) {
                 }
               </div>
               <h4>{item.title}</h4>
-              <p className='discription'>{item.description}</p>
+              {/* <p className='discription'>{item.description}</p> */}
+              <p className='discription' dangerouslySetInnerHTML={{ __html: item.description }} />
             </div>
             <div className="like-dislike">
               <div className="like">
@@ -73,6 +79,7 @@ function PostCard(post: any) {
         )
       })}
     </div>
+
   )
 }
 

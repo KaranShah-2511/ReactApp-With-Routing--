@@ -1,8 +1,28 @@
 .navigation {
+    .noti-logout {
+        width: 10%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .notification {
+        z-index: 999999;
+    }
+
     display: flex;
     align-items: center;
     margin-bottom: 40px;
     padding: 0 35px;
+    position: sticky;
+    top: 0;
+    background-color: #d9d9d9;
+    z-index: 100;
+    background-color: white;
+    box-shadow: 0 0 10px -5px black;
+    background-image: url('../../Assets/Images/wave.svg');
+    // background-size: contain;
+    // object-fit: cover;
 
     .nav-item {
         width: 85%;
@@ -51,10 +71,87 @@
                 }
             }
         }
-
-
-
     }
-
-
 }
+
+ul {
+    li {
+        text-decoration: none;
+        list-style: none;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        a {
+            text-decoration: none;
+            color: black;
+            padding: 10px;
+            border-radius: 10px;
+            font-weight: 500;
+        }
+    }
+}
+ul.MuiList-root.MuiList-padding.MuiMenu-list.css-6hp17o-MuiList-root-MuiMenu-list {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-notification {
+    nav.navbar {
+      padding: 0;
+      button {
+        padding: 19px;
+        background: url(../../Assets/Images/bell.svg) no-repeat;
+        background-position: 50% 50%;
+        background-size: 17px;
+        border: 1px solid #dcdce2;
+        border-radius: 8px;
+        position: relative;
+        &:focus,
+        &:focus-visible {
+          outline: none;
+          box-shadow: 0 0 0;
+        }
+        span {
+          display: none;
+        }
+      
+      }
+    }
+  }
+  #app-notification {
+    .notification-main {
+      display: inline-block;
+      width: 100%;
+    }
+ 
+    .notification-footer {
+      padding: 0;
+      border: 0;
+      box-shadow: 0 0 24px rgba(19, 23, 31, 0.1);
+      .notification-clear {
+        width: 100%;
+        a {
+          display: flex;
+          vertical-align: middle;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          color: var(--app-dark-gray);
+          padding: 15px;
+          font-size: 15px;
+          line-height: 16px;
+          font-weight: var(--app-font-regular);
+          svg {
+            font-size: 22px;
+            margin: 0 5px 0 0;
+            color: #9598ac;
+          }
+        }
+      }
+    }
+  }
+  
