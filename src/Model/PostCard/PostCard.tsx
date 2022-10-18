@@ -25,9 +25,9 @@ function PostCard(props: PostProps) {
         const tag: any = item.tags;
         return (
           <div className="card" key={Math.random()} onClick={() => viewPost(item._id)}>
-            <div className="card__header">
+            {/* <div className="card__header">
               <img src="https://source.unsplash.com/600x400/?computer" alt="card__image" className="card__image" width="600" />
-            </div>
+            </div> */}
             <div className="card__body">
               <div className="tag-div">
                 {

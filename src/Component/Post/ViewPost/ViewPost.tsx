@@ -202,34 +202,31 @@ function ViewPost() {
                             anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
                         >
                             <MenuItem>
-                                <Avatar /> Profile
+                                Profile
                             </MenuItem>
                             <MenuItem>
-                                <Avatar /> My account
+                                My account
                             </MenuItem>
                             {/* <Divider /> */}
                             {(userData.id != post?.createdBy) ?
                                 <MenuItem onClick={handleShowPopup}>
-                                    <ListItemIcon>
-                                        <ReportIcon fontSize="small" />
-                                    </ListItemIcon>
+
                                     Report
                                 </MenuItem>
                                 :
                                 (<div>
                                     <Divider />
+
+                                    <MenuItem  >
+                                        Update
+                                    </MenuItem>
                                     <MenuItem onClick={() => deltePost(post._id)}  >
-                                        <ListItemIcon >
-                                            <DeleteIcon fontSize="small" />
-                                        </ListItemIcon>
                                         Delete
                                     </MenuItem>
                                     {(!post.status)
                                         ?
                                         <MenuItem >
-                                            <ListItemIcon>
-                                                <ReportIcon fontSize="small" />
-                                            </ListItemIcon>
+
                                             Open Report Request
                                         </MenuItem>
                                         : ''}

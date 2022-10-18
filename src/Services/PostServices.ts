@@ -5,6 +5,12 @@ import { MyModelEntity } from "../Core/Services/MyModelService";
 export type SearchParam = {
     Searchby: string;
 }
+export type PostParams = {
+    title: string;
+    description: string;
+    createdBy: string | number;
+    tags: string[];
+}
 export type Bookmark = {
     userId: string | number;
     postId: string | number;
@@ -47,6 +53,20 @@ export class Post extends MyModelEntity {
 }
 
 export class PostServices {
+    createPost(params?: PostParams): Promise<any> {
+        return new Promise((resolve, reject) => {
+            Http.post('post', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+
 
     getAllPost(params?: SearchParam): Promise<Post[]> {
         return new Promise((resolve, reject) => {
