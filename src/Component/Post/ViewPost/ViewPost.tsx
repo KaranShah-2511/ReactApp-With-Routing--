@@ -2,26 +2,23 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router";
 import { User } from '../../../Services/UserService';
-import { PostServices, Post } from '../../../Services/PostServices';
+import { PostServices, Post, Comments } from '../../../Services/PostServices';
 import moment from 'moment';
 import { BsBookmarkPlus, BsBookmarkPlusFill, BsThreeDotsVertical } from 'react-icons/bs';
 import { Auth } from '../../../Core/Services/AuthService';
 import { ToastContainer, Toast, Spinner } from 'react-bootstrap';
 import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineLike } from 'react-icons/ai';
 import Box from '@mui/material/Box';
-import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import ReportIcon from '@mui/icons-material/Report';
-import DeleteIcon from '@mui/icons-material/Delete';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { Formik } from 'formik';
+import ReplyIcon from '@mui/icons-material/Reply';
 import * as yup from 'yup';
 import './ViewPost.scss';
 
@@ -30,6 +27,7 @@ function ViewPost() {
     const [post, setPost] = useState<Post>();
     const postServices = new PostServices();
     const [isBookmarked, setIsBookmarked] = useState(false);
+    const [comments, setComments] = useState<Comments[]>([]);
     const [isLiked, setIsLiked] = useState(0);
     const [isDisLiked, setDisLiked] = useState(0);
     const [showMessage, setShowMessage] = useState<string | null>(null);
@@ -41,6 +39,12 @@ function ViewPost() {
     const open = Boolean(anchorEl);
     const userData: User = Auth.getUser();
     const navigate = useNavigate();
+    const [comment, setComment] = useState<string>('');
+    const [textboxId, setTextboxId] = useState<string | number>('');
+    const [highlightedComment, setHighlightedComment] = useState<string | number>('');
+    const [seeMore, setSeeMore] = useState<string | number>('');
+
+    console.log('highlightedComment', highlightedComment)
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -48,7 +52,6 @@ function ViewPost() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
     useEffect(() => {
         if (postId) {
             postServices.getSinglePost(postId).then((res: any) => {
@@ -61,8 +64,15 @@ function ViewPost() {
                     setDisLiked(-1);
                 }
             })
+            allPostComments();
         }
     }, []);
+
+    const allPostComments = () => {
+        postServices.getComments(postId).then((res: any) => {
+            setComments(res);
+        })
+    }
 
     const bookmark = async (postId, status) => {
         setIsBookmarked(status)
@@ -135,15 +145,40 @@ function ViewPost() {
     };
 
     const deltePost = async (postId) => {
-        console.log('postId', postId)
         await postServices.deletePost(postId).then((res) => {
-            console.log('res', res)
             navigate(`/`, { replace: true });
 
         }).catch((e) => {
             console.log('e', e)
         })
     };
+
+    const handleMessageChange = event => {
+        setComment(event.target.value);
+    };
+
+    const submitComment = (parentCommentId?: string | number, parentId?: string | number) => {
+        if (comment) {
+            const payload: any = {
+                userId: userData.id,
+                parentId: (parentId) ? parentId : postId,
+                comment: comment
+            };
+            if (parentCommentId) {
+                payload.parentCommentId = parentCommentId;
+            }
+            // console.log('payload', payload)
+            postServices.createComments(payload).then((res) => {
+                console.log('succeful', res)
+                setComment('');
+                allPostComments();
+            }).catch((e) => {
+                console.log('e', e)
+            })
+        }
+
+    };
+
     return (
         <div className='post-view'>
             <ToastContainer className="p-3" position="top-center">
@@ -318,7 +353,108 @@ function ViewPost() {
 
                 <div dangerouslySetInnerHTML={{ __html: post?.description }} />
             </div>
-        </div>
+            <Divider />
+            <div className="comment">
+                <h1 className='title'>Comments:</h1>
+                <div className="all-commnets">
+                    {comments.map((item) => {
+                        return (
+                            <>
+                                <div className="user-comment" style={{ backgroundColor: highlightedComment == item._id ? '#d3d3d3' : '' }}>
+                                    <div className="user-name">
+                                        <div className="name">
+                                            {item?.name}
+                                        </div>
+                                        <div className="comment-btn" onClick={() => setTextboxId(item._id)}>
+
+                                            <ReplyIcon />
+                                            <h6 >Reply</h6>
+                                        </div>
+                                    </div>
+                                    <div className="comment-text">
+                                        {item?.comment}
+                                    </div>
+                                    {(textboxId == item?._id) ?
+
+                                        <><br /><div className="comment-box">
+                                            <div className="comment-input">
+                                                <textarea value={comment} placeholder='Enter Comment...' className='input-box' onChange={handleMessageChange}></textarea>
+                                            </div>
+                                            <div className="comment-btn">
+                                                <Button onClick={() => submitComment(item.parentCommentId, item.parentId)}>Post</Button>
+                                                <button className='cross' onClick={() => setTextboxId('')}>X</button>
+                                            </div>
+                                        </div></>
+                                        : null}
+                                </div>
+
+                                {(item.subComments.length > 0 && seeMore == item._id) ?
+                                    item.subComments.map((subItem) => {
+                                        return (
+                                            <div className="sub-user-comment" style={{ backgroundColor: highlightedComment == subItem._id ? '#d3d3d3' : '' }} >
+                                                <div className="user-name">
+                                                    <div className="name">
+                                                        <a className='parent' onClick={() => setHighlightedComment(subItem.parentCommentId)} >  @ {subItem.parent} </a>
+                                                        {subItem?.name}
+                                                    </div>
+                                                    <div className="comment-btn" onClick={() => setTextboxId(subItem?._id)}>
+                                                        <ReplyIcon />
+                                                        <h6 >Reply</h6>
+                                                    </div>
+                                                </div>
+                                                <div className="comment-text">
+                                                    {subItem?.comment}
+                                                </div>
+                                                {(textboxId == subItem?._id) ?
+                                                    <><br /><div className="comment-box">
+                                                        <div className="comment-input">
+                                                            <textarea value={comment} placeholder='Enter Comment...' className='input-box' onChange={handleMessageChange}></textarea>
+                                                        </div>
+                                                        <div className="comment-btn">
+                                                            <Button onClick={() => submitComment(subItem._id, subItem.parentId)}>Post</Button>
+                                                            <button className='cross' onClick={() => setTextboxId('')}>X</button>
+                                                        </div>
+                                                    </div></>
+                                                    : null}
+                                            </div>
+                                        )
+                                    })
+
+                                    : ''}
+                                {(item.subComments.length > 0) ?
+
+                                    (seeMore == item._id) ?
+                                        <div className="see-more">
+                                            <p onClick={() => setSeeMore('')}>See Less</p>
+                                        </div>
+                                        :
+                                        <div className="see-more">
+                                            <p onClick={() => setSeeMore(item._id)}>See More</p>
+                                        </div>
+
+
+
+                                    : ''}
+
+                                {/* <p onClick={() => setSeeMore(item._id)}>
+                                    {(seeMore == item._id) ? 'See Less' : 'See More'}
+                                </p> */}
+                            </>
+                        )
+                    })}
+                </div>
+
+
+                <div className="comment-box">
+                    <div className="comment-input">
+                        <textarea className='input-box' value={comment} placeholder='Enter Comment...' onChange={handleMessageChange} ></textarea>
+                    </div>
+                    <div className="comment-btn">
+                        <Button onClick={() => submitComment()} >Post</Button>
+                    </div>
+                </div>
+            </div>
+        </div >
     )
 }
 

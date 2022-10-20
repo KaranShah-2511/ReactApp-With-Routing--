@@ -77,9 +77,6 @@ function CreatePost() {
             onChange={(newContent) => contentFieldChanaged(newContent)}
           />
         </div>
-
-
-
         <div className="tag-container">
           {/* {tags.map((tag) =>  <div className="tag">{tag} </div>)} */}
           {tags.map((tag, index) => {

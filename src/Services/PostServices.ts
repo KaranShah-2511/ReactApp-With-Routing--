@@ -27,6 +27,12 @@ export type ReportPost = {
     postId: string | number;
     reason: string;
 }
+export type CommentsParam = {
+    userId: string | number;
+    parentId: string | number;
+    parentCommentId: string | number;
+    comment: string;
+}
 export class Post extends MyModelEntity {
 
     _id: string | number;
@@ -43,6 +49,23 @@ export class Post extends MyModelEntity {
     isLiked: number;
     isBookmarked: boolean;
     status: boolean;
+
+    constructor(data?: any) {
+        super(data);
+        if (data) {
+            this.objectAssign(this, data);
+        }
+    }
+}
+export class Comments extends MyModelEntity {
+    _id: string | number;
+    name: string;
+    email: string;
+    comment: string;
+    parentId: string | number;
+    parentCommentId: string | number;
+    subComments: any[];
+    created: string;
 
     constructor(data?: any) {
         super(data);
@@ -147,6 +170,35 @@ export class PostServices {
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+
+    createComments(params: CommentsParam): Promise<any> {
+        return new Promise((resolve, reject) => {
+            Http.post('post/comment', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+
+    getComments(id: string | number): Promise<Comments[]> {
+        return new Promise((resolve, reject) => {
+            const url = ['post/comment', id].join('/');
+            Http.get(url)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
                     } else {
                         reject(res.data);
                     }
