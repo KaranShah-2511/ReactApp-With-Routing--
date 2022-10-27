@@ -10,6 +10,7 @@ export type PostParams = {
     description: string;
     createdBy: string | number;
     tags: string[];
+    status?: boolean;
 }
 export type Bookmark = {
     userId: string | number;
@@ -79,6 +80,20 @@ export class PostServices {
     createPost(params?: PostParams): Promise<any> {
         return new Promise((resolve, reject) => {
             Http.post('post', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    updatePost(params: PostParams, id: string | number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const url = ['post/updatepost', id].join('/');
+            Http.post(url, params)
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);

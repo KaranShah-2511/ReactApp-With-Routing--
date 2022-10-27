@@ -1,12 +1,14 @@
-import React, { useState, useRef, useMemo, } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import JoditEditor from 'jodit-react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { Auth } from '../../../Core/Services/AuthService';
-import './CreatePost.scss';
 import { User } from '../../../Services/UserService';
 import { PostServices } from '../../../Services/PostServices';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router";
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
+import './CreatePost.scss';
 
 function CreatePost() {
   const editor = useRef(null);
@@ -14,12 +16,24 @@ function CreatePost() {
   const userData: User = Auth.getUser();
   const postServices = new PostServices();
   const navigate = useNavigate();
-  const [post, setPost] = useState<any>({
-    title: '',
-    description: '',
-    tags: [],
-    createdBy: userData.id,
-  })
+  const postId: any = useParams().postId;
+  const [oldPost, setOldPost] = useState<any>(null);
+  const [checked, setChecked] = useState();
+  const [post, setPost] = useState<any>({ title: '', description: '', tags: [], createdBy: userData.id, })
+  useEffect(() => {
+    if (postId) {
+      postServices.getSinglePost(postId).then((res: any) => {
+        setOldPost(res.data);
+        setChecked(res.status)
+        setPost({
+          title: res.title,
+          description: res.description,
+          createdBy: userData.id,
+        })
+        setTags(res.tags);
+      })
+    }
+  }, []);
 
   const contentFieldChanaged = (data) => {
     setPost({ ...post, 'description': data })
@@ -36,25 +50,44 @@ function CreatePost() {
   const removeTags = index => {
     setTags([...tags.filter(tag => tags.indexOf(tag) !== index)]);
   };
+  const switchHandler = (event) => {
+    setChecked(event.target.checked);
+  };
 
   const createPost = async (event) => {
     event.preventDefault();
     const param = { ...post, tags: tags }
-    console.log('data', param)
-    if (param.title && param.description ) {
-      await postServices.createPost(param).then((res) => {
-        console.log('res', res)
-        navigate('/')
-      }).catch((err) => {
-        console.log('err', err)
+
+    if (postId) {
+      const newParam = { ...param, status: checked }
+      await postServices.updatePost(newParam, postId).then((res: any) => {
+        navigate('/post/' + postId);
       })
+    } else {
+      if (param.title && param.description) {
+        await postServices.createPost(param).then((res) => {
+          console.log('res', res)
+          navigate('/')
+        }).catch((err) => {
+          console.log('err', err)
+        })
+      }
     }
   }
 
   return (
     <div className='createpost-div'>
       <div className='title'>
-        Create Post
+        {postId ? 'Update Post' : 'Create Post'}
+      </div>
+      <div className="status">
+        {
+          postId ? <>
+            <FormGroup>
+              <FormControlLabel control={<Switch checked={checked} onChange={switchHandler} />} label="Post Status" />
+            </FormGroup>
+          </> : ''
+        }
       </div>
       <Form onSubmit={createPost}>
         <div className="my-3">
@@ -92,7 +125,11 @@ function CreatePost() {
             onKeyUp={(event) => addTags(event)}
           />
         </div>
-        <Button onClick={createPost} className="rounded-0" color="primary">Create Post</Button>
+        {
+          (postId) ? <Button name="update" onClick={createPost} className="btn btn-primary rounded-0">Update Post</Button> :
+            <Button onClick={createPost} name="create" className="rounded-0" color="primary">Create Post</Button>
+
+        }
       </Form>
 
       {/* <p>

@@ -36,6 +36,11 @@ const app: RouteProps[] = [
         private: true
     },
     {
+        path: '/updatepost/:postId',
+        element: CreatePost,
+        private: true
+    },
+    {
         path: '/post/:postId',
         element: ViewPost,
         private: true

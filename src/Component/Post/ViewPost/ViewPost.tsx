@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useParams } from "react-router";
 import { User } from '../../../Services/UserService';
 import { PostServices, Post, Comments } from '../../../Services/PostServices';
@@ -44,7 +44,6 @@ function ViewPost() {
     const [highlightedComment, setHighlightedComment] = useState<string | number>('');
     const [seeMore, setSeeMore] = useState<string | number>('');
 
-    console.log('highlightedComment', highlightedComment)
 
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -245,16 +244,15 @@ function ViewPost() {
                             {/* <Divider /> */}
                             {(userData.id != post?.createdBy) ?
                                 <MenuItem onClick={handleShowPopup}>
-
                                     Report
                                 </MenuItem>
                                 :
                                 (<div>
                                     <Divider />
-
-                                    <MenuItem  >
-                                        Update
+                                    <MenuItem>
+                                        <Link to={`/updatepost/${post._id}`}>Update</Link>
                                     </MenuItem>
+
                                     <MenuItem onClick={() => deltePost(post._id)}  >
                                         Delete
                                     </MenuItem>

@@ -12,7 +12,6 @@ type PostProps = {
 function PostCard(props: PostProps) {
   const navigate = useNavigate();
   const newpost = props.post;
-  console.log('newpost', newpost)
 
   const viewPost = (id) => {
     navigate(`/post/${id}`, { replace: true });
