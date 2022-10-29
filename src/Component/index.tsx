@@ -1,4 +1,3 @@
-
 export { default as Dashboard } from "./Dashboard";
 export { default as Login } from "./Login";
 export { default as Navigation } from "./Navigation";
@@ -7,3 +6,4 @@ export { default as History } from "./History";
 export { default as ViewPost } from "./Post/ViewPost";
 export { default as Bookmark } from "./Bookmark";
 export { default as CreatePost } from "./Post/CreatePost";
+export { default as Profile } from "./Profile";

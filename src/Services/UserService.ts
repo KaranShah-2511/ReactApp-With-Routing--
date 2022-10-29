@@ -15,8 +15,8 @@ export class User extends MyModelEntity {
     _id: string;
     Email: string;
     FullName: string;
-    Token: string;
-    UserType: string;
+    Token?: string;
+    UserType?: string;
 
     constructor(data?: any) {
         super(data);
@@ -59,6 +59,34 @@ export class UserService {
     getBookmark(): Promise<Post[]> {
         return new Promise((resolve, reject) => {
             Http.get('post/bookmark')
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    getUserPosts(id: string | number): Promise<Post[]> {
+        return new Promise((resolve, reject) => {
+            const url = ['post/getallposts', id].join('/');
+            Http.get(url)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    getUserProfile(id: string | number): Promise<User> {
+        return new Promise((resolve, reject) => {
+            const url = ['user/profile', id].join('/');
+            Http.get(url)
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);
