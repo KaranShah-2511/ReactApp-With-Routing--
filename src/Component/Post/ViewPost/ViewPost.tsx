@@ -24,11 +24,8 @@ import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
-import Modal from "react-bootstrap/Modal";
-import { Formik } from "formik";
 import ReplyIcon from "@mui/icons-material/Reply";
-import * as yup from "yup";
+import { ReportPopup } from "../../../Model";
 import "./ViewPost.scss";
 
 function ViewPost() {
@@ -43,7 +40,7 @@ function ViewPost() {
   const [showError, setShowError] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [show, setShow] = useState(false);
-  const handleClosePopup = () => setShow(false);
+  console.log('show', show)
   const handleShowPopup = () => setShow(true);
   const open = Boolean(anchorEl);
   const userData: User = Auth.getUser();
@@ -54,12 +51,17 @@ function ViewPost() {
     ""
   );
   const [seeMore, setSeeMore] = useState<string | number>("");
-
+  const [unlock, setUnlock] = useState(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const showPopup = () => {
+    setShow(true);
+    setUnlock(true);
   };
   useEffect(() => {
     if (postId) {
@@ -127,37 +129,6 @@ function ViewPost() {
       });
   };
 
-  const getInitialValues = () => {
-    return {
-      reason: "",
-    };
-  };
-  const onSubmit = async (values, { setSubmitting }) => {
-    setSubmitting(true);
-    const payload: any = {
-      userId: userData.id,
-      postId: postId,
-      reason: values.reason,
-    };
-    await postServices
-      .reportPost(payload)
-      .then((res) => {
-        setShowMessage(res.message);
-        handleClosePopup();
-      })
-      .catch((e) => {
-        setShowError(e.message);
-        handleClosePopup();
-      });
-  };
-
-  const formlik = {
-    validationSchema: yup.object().shape({
-      reason: yup.string().required("Please enter Event Name"),
-    }),
-    initialValues: getInitialValues(),
-    onSubmit: onSubmit,
-  };
 
   const deltePost = async (postId) => {
     await postServices
@@ -292,14 +263,13 @@ function ViewPost() {
               transformOrigin={{ horizontal: "right", vertical: "top" }}
               anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
             >
-              <MenuItem>Profile</MenuItem>
-              <MenuItem>My account</MenuItem>
+              {/* <MenuItem>Profile</MenuItem>
+              <MenuItem>My account</MenuItem> */}
               {/* <Divider /> */}
               {userData.id != post?.createdBy ? (
                 <MenuItem onClick={handleShowPopup}>Report</MenuItem>
               ) : (
-                <div>
-                  <Divider />
+                <div className="drop-down-menu">
                   <MenuItem>
                     <Link to={`/updatepost/${post._id}`}>Update</Link>
                   </MenuItem>
@@ -307,78 +277,21 @@ function ViewPost() {
                   <MenuItem onClick={() => deltePost(post._id)}>
                     Delete
                   </MenuItem>
-                  {!post.status ? <MenuItem>Open Report Request</MenuItem> : ""}
+                  {!post.status ?
+                    <MenuItem onClick={showPopup}>
+                      Open Report Request
+                    </MenuItem>
+                    : ""}
                 </div>
               )}
             </Menu>
           </React.Fragment>
         </div>
       </div>
-      <Modal show={show} onHide={handleClosePopup}>
-        <Modal.Header closeButton>
-          <Modal.Title>Post Report</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Formik {...formlik}>
-            {({
-              handleSubmit,
-              handleChange,
-              touched,
-              values,
-              isSubmitting,
-              errors,
-            }) => (
-              <Form onSubmit={handleSubmit}>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlInput1"
-                >
-                  <Form.Label>Email address</Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="name@example.com"
-                    autoFocus
-                    value={userData.Email}
-                    disabled={true}
-                  />
-                </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  controlId="exampleForm.ControlTextarea1"
-                >
-                  <Form.Label>Report Description</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    name="reason"
-                    type="reason"
-                    placeholder="Your reason"
-                    onChange={handleChange}
-                    value={values.reason}
-                    isValid={touched.reason && !errors.reason}
-                    autoComplete="off"
-                    isInvalid={!!errors.reason}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.reason}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Button
-                  className="mr-1 save-btn"
-                  variant="success"
-                  type="submit"
-                >
-                  {" "}
-                  Submit
-                  {isSubmitting ? (
-                    <Spinner className="spinner" animation="border" size="sm" />
-                  ) : null}
-                </Button>
-              </Form>
-            )}
-          </Formik>
-        </Modal.Body>
-      </Modal>
+
+      {/* Report PopUp */}
+      <ReportPopup view={show} type="Post" Id={postId} unlock={unlock} handleShowPopup={setShow} />
+
       <div className="post-owner">
         <div className="name-date">
           <div
@@ -494,74 +407,74 @@ function ViewPost() {
 
                 {item.subComments.length > 0 && seeMore == item._id
                   ? item.subComments.map((subItem) => {
-                      return (
-                        <div
-                          className="sub-user-comment"
-                          style={{
-                            backgroundColor:
-                              highlightedComment == subItem._id
-                                ? "#d3d3d3"
-                                : "",
-                          }}
-                        >
-                          <div className="user-name">
-                            <div className="name">
-                              <a
-                                className="parent"
-                                onClick={() =>
-                                  setHighlightedComment(subItem.parentCommentId)
-                                }
-                              >
-                                {" "}
-                                @ {subItem.parent}{" "}
-                              </a>
-                              {subItem?.name}
-                            </div>
-                            <div
-                              className="comment-btn"
-                              onClick={() => setTextboxId(subItem?._id)}
+                    return (
+                      <div
+                        className="sub-user-comment"
+                        style={{
+                          backgroundColor:
+                            highlightedComment == subItem._id
+                              ? "#d3d3d3"
+                              : "",
+                        }}
+                      >
+                        <div className="user-name">
+                          <div className="name">
+                            <a
+                              className="parent"
+                              onClick={() =>
+                                setHighlightedComment(subItem.parentCommentId)
+                              }
                             >
-                              <ReplyIcon />
-                              <h6>Reply</h6>
-                            </div>
+                              {" "}
+                              @ {subItem.parent}{" "}
+                            </a>
+                            {subItem?.name}
                           </div>
-                          <div className="comment-text">{subItem?.comment}</div>
-                          {textboxId == subItem?._id ? (
-                            <>
-                              <br />
-                              <div className="comment-box">
-                                <div className="comment-input">
-                                  <textarea
-                                    value={comment}
-                                    placeholder="Enter Comment..."
-                                    className="input-box"
-                                    onChange={handleMessageChange}
-                                  ></textarea>
-                                </div>
-                                <div className="comment-btn">
-                                  <Button
-                                    onClick={() =>
-                                      submitComment(
-                                        subItem._id,
-                                        subItem.parentId
-                                      )
-                                    }
-                                  >
-                                    Post
-                                  </Button>
-                                  <button
-                                    className="cross"
-                                    onClick={() => setTextboxId("")}
-                                  >
-                                    X
-                                  </button>
-                                </div>
-                              </div>
-                            </>
-                          ) : null}
+                          <div
+                            className="comment-btn"
+                            onClick={() => setTextboxId(subItem?._id)}
+                          >
+                            <ReplyIcon />
+                            <h6>Reply</h6>
+                          </div>
                         </div>
-                      );
-                    })
+                        <div className="comment-text">{subItem?.comment}</div>
+                        {textboxId == subItem?._id ? (
+                          <>
+                            <br />
+                            <div className="comment-box">
+                              <div className="comment-input">
+                                <textarea
+                                  value={comment}
+                                  placeholder="Enter Comment..."
+                                  className="input-box"
+                                  onChange={handleMessageChange}
+                                ></textarea>
+                              </div>
+                              <div className="comment-btn">
+                                <Button
+                                  onClick={() =>
+                                    submitComment(
+                                      subItem._id,
+                                      subItem.parentId
+                                    )
+                                  }
+                                >
+                                  Post
+                                </Button>
+                                <button
+                                  className="cross"
+                                  onClick={() => setTextboxId("")}
+                                >
+                                  X
+                                </button>
+                              </div>
+                            </div>
+                          </>
+                        ) : null}
+                      </div>
+                    );
+                  })
                   : ""}
                 {item.subComments.length > 0 ? (
                   seeMore == item._id ? (

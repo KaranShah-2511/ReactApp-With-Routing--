@@ -4,12 +4,18 @@ import { Post } from "./../../Services/PostServices";
 import { User, UserService } from "../../Services/UserService";
 import PostCard from "./../../Model/PostCard/PostCard";
 import axios from "axios";
+import { Button } from "react-bootstrap";
+import { ReportPopup } from "../../Model";
+import { Auth } from "../../Core/Services/AuthService";
 
 function Profile() {
   const userId: any = useParams().userId;
   const userService = new UserService();
   const [userPosts, setUserPosts] = useState<Post[]>([]);
   const [profile, setProfile] = useState<User>();
+  const [show, setShow] = useState(false);
+  const handleShowPopup = () => setShow(true);
+  const userData: User = Auth.getUser();
 
   useEffect(() => {
     const getProfile = async () => {
@@ -27,11 +33,18 @@ function Profile() {
 
   return (
     <>
-      <div className="title">Profile</div>
-      <div className="user">
-        <div className="user__name">{profile?.FullName}</div>
-        <div className="user__name">{profile?.Email}</div>
+      <ReportPopup view={show} type="Account" Id={userId}  handleShowPopup={setShow} />
+      <div className="title">
+        <div className="user">
+          <div className="user__name">{profile?.FullName}</div>
+          {/* <div className="user__name">{profile?.Email}</div> */}
+        </div>
       </div>
+      {(userData.id !== userId) ?
+        <Button variant="primary" onClick={handleShowPopup}>Report</Button>
+        : ''}
+
+
       <PostCard post={userPosts} />
     </>
   );

@@ -61,6 +61,9 @@ function CreatePost() {
     if (postId) {
       const newParam = { ...param, status: checked }
       await postServices.updatePost(newParam, postId).then((res: any) => {
+        if (res.message) {
+          alert(res.message)
+        }
         navigate('/post/' + postId);
       })
     } else {

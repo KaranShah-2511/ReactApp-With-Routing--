@@ -1,15 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { RiSearchLine } from "react-icons/ri";
-import {
-  Col,
-  Form,
-  Row,
-  Button,
-  Spinner,
-  ToastContainer,
-  Toast,
-} from "react-bootstrap";
 import { Auth } from "../../Core/Services/AuthService";
 import { Navbar, Offcanvas } from "react-bootstrap";
 import MenuItem from "@mui/material/MenuItem";
@@ -19,6 +9,7 @@ import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import "./Navigation.scss";
+import { Notification, UserService } from "../../Services/UserService";
 
 function Navigation() {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -26,6 +17,11 @@ function Navigation() {
   const navigate = useNavigate();
   const open = Boolean(anchorEl);
   const user = Auth.getUser();
+  const [showNotification, setShowNotification] = useState<Notification[]>([]);
+  const userServices = new UserService();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -42,6 +38,25 @@ function Navigation() {
       navigate("/login/");
     });
   };
+
+  useEffect(() => {
+    getNotification();
+  }, []);
+
+  const getNotification = async () => {
+    const data = await userServices.getUserNotification(user.id);
+    setShowNotification(data);
+  };
+
+  const deleteNotification = async (id) => {
+    await userServices.deleteNotification(id)
+      .then(() => {
+        getNotification();
+      })
+      .catch((e) => { });
+
+  }
+
 
   return (
     <div className="navigation">
@@ -147,7 +162,39 @@ function Navigation() {
                   My Notifications
                 </Offcanvas.Title>
               </Offcanvas.Header>
-              <Offcanvas.Body>notification</Offcanvas.Body>
+              <Offcanvas.Body>
+
+                <>
+                  {(loading) ? <div className='loader-area p-3'>Loading...</div> : null}
+                  {(error) ? <div className='error-area text-danger p-3'>{error}</div> : null}
+                  {
+                    (showNotification && showNotification.length)
+                      ? <>
+                        {
+                          showNotification.map((value, i) => {
+                            return (
+                              <div className="live-class-notification notification-main" key={i}>
+
+                                <div className="notification-list">
+                                  <ul>
+                                    <li >
+                                      <div className="title-closer">
+                                        <h4>{value.description}</h4>
+                                        <button className="btn-close" onClick={() => deleteNotification(value._id)}></button>
+                                      </div>
+
+                                    </li>
+                                  </ul>
+                                </div>
+                              </div>
+                            )
+                          })
+                        }
+                      </>
+                      : null
+                  }
+                </>
+              </Offcanvas.Body>
             </Navbar.Offcanvas>
           </Navbar>
         </div>

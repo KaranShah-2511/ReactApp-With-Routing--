@@ -28,6 +28,7 @@ function PostCard(props: PostProps) {
               <img src="https://source.unsplash.com/600x400/?computer" alt="card__image" className="card__image" width="600" />
             </div> */}
             <div className="card__body">
+            {(item.blocked == true) ? <div className="blocked">Blocked</div> : ''}
               <div className="tag-div">
                 {
                   tag.map((item, i) => {

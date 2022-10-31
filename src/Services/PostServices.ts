@@ -23,10 +23,12 @@ export type LikePost = {
     postId: string | number;
     status: number;
 }
-export type ReportPost = {
+export type Report = {
     userId: string | number;
     postId: string | number;
-    reason: string;
+    description: string;
+    accountId: string | number;
+    type: string;
 }
 export type CommentsParam = {
     userId: string | number;
@@ -50,6 +52,7 @@ export class Post extends MyModelEntity {
     isLiked: number;
     isBookmarked: boolean;
     status: boolean;
+    blocked: boolean;
 
     constructor(data?: any) {
         super(data);
@@ -164,9 +167,35 @@ export class PostServices {
         });
     }
 
-    reportPost(params: ReportPost): Promise<any> {
+    reportPost(params: Partial<Report>): Promise<any> {
         return new Promise((resolve, reject) => {
             Http.post('post/postreport', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    reportAccount(params: Partial<Report>): Promise<any> {
+        return new Promise((resolve, reject) => {
+            Http.post('post/accountreport', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    unblockReq(params: Partial<Report>): Promise<any> {
+        return new Promise((resolve, reject) => {
+            Http.post('post/unblockreq', params)
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data);

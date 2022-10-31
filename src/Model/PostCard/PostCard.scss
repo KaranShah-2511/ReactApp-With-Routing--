@@ -43,7 +43,21 @@
     
     }
 }
-
+.blocked {
+    height: 90%;
+    position: absolute;
+    width: 90%;
+    background: #ffd2d2c2;
+    /* opacity: 0.1; */
+    color: #fb2b2b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    font-weight: bold;
+    font-family: cursive;
+    border-radius: 5px;
+}
 img {
     max-width: 100%;
     display: block;
