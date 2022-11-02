@@ -9,6 +9,7 @@ import {
   ViewPost,
 } from "../Component";
 import { NotFound } from "../Component/Error";
+import { AdminDashBoard } from "../Admin";
 
 const comman: RouteProps[] = [
   {
@@ -16,6 +17,19 @@ const comman: RouteProps[] = [
     element: NotFound,
   },
 ];
+
+const admin: RouteProps[] = [
+  {
+    path: "/",
+    to: "dashboard",
+    private: true,
+  },
+  {
+    path: "/dashboard/*",
+    element: AdminDashBoard,
+    private:true
+  },
+]
 
 const app: RouteProps[] = [
   {
@@ -73,6 +87,6 @@ const app: RouteProps[] = [
   },
 ];
 
-const routes = { app, comman };
+const routes = { app, comman,admin };
 
 export default routes;
