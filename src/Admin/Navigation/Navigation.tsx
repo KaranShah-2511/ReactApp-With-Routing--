@@ -26,7 +26,7 @@ function Navigation() {
             <Link to="/">AllUsers</Link>
           </li>
           <li>
-            <Link to="/">Reports</Link>
+            <Link to="/reports">Reports</Link>
           </li>
         </ul>
       </div>

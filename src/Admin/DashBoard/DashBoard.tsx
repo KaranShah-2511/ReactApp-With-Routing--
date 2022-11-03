@@ -15,7 +15,6 @@ function DashBoard() {
     const [totalReports, setTotalReports] = useState<any>(0);
     const [userPostCount, setUserPostCount] = useState<PostUserCount>()
     const options: any = [];
-    console.log('totalUser', totalUser)
     for (let i = 0; i <= 10; i++) {
         const years = year - i;
         options.push(<option value={years}>{years}</option>);
@@ -102,7 +101,7 @@ function DashBoard() {
         },
         series: [
             {
-                name: "series-1",
+                name: "Post Count",
                 data: userPostCount?.count
             }
         ]
