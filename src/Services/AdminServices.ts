@@ -12,6 +12,11 @@ export type PostUserCount = {
     user: number[];
     count: number[];
 }
+export type ViewLikeCount = {
+    user: number[];
+    likeCount: number[];
+    viewCount: number[];
+}
 export type SearchParam = {
     year: string;
 }
@@ -48,6 +53,19 @@ export class AdminService {
     getpostcount(): Promise<PostUserCount> {
         return new Promise((resolve, reject) => {
             Http.get('admin/postcount')
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    getviewlikecount(): Promise<ViewLikeCount> {
+        return new Promise((resolve, reject) => {
+            Http.get('admin/user/likeviews/count')
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);

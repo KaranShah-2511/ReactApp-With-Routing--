@@ -1,11 +1,16 @@
 .admin-dashboard {
     background-color: rgb(42, 42, 42);
-   
-// opacity: 0.5;
+
+    // .bargraphs {
+    //     display: flex;
+    // }
+
+    // opacity: 0.5;
     height: 100%;
     width: 100%;
     margin-top: 1px;
     padding-bottom: 83px;
+
     .chart-div {
         width: 70%;
         height: 100%;
@@ -28,19 +33,21 @@
             position: sticky;
             top: 0;
 
-            .user-count{
+            .user-count {
                 background-color: rgb(0, 0, 0);
                 padding: 1rem;
                 border-radius: 5px;
                 text-align: center;
             }
-            .post-count{
+
+            .post-count {
                 background-color: rgb(0, 0, 0);
                 padding: 1rem;
                 border-radius: 5px;
                 text-align: center;
             }
-            .report-count{
+
+            .report-count {
                 background-color: rgb(0, 0, 0);
                 padding: 1rem;
                 border-radius: 5px;
@@ -52,7 +59,7 @@
 
     label {
         color: white;
-        padding-right:  20px;
+        padding-right: 20px;
         font-size: 25px;
     }
 }
@@ -64,7 +71,7 @@
 //     right: 0px;
 //     bottom: 0px;
 //     left: 0px;
-   
+
 //     background-image: url("../../Assets/Images/4561977.jpg");
 //     background-size: cover;
 //     background-repeat: no-repeat;

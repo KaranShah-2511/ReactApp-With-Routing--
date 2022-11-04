@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
-import { AdminService, Count, PostUserCount, SearchParam } from "../../Services/AdminServices";
+import { AdminService, Count, PostUserCount, SearchParam, ViewLikeCount } from "../../Services/AdminServices";
 import Chart from "react-apexcharts";
 import './DashBoard.scss'
 
@@ -14,6 +14,7 @@ function DashBoard() {
     const [totalPost, setTotalPost] = useState<any>(0);
     const [totalReports, setTotalReports] = useState<any>(0);
     const [userPostCount, setUserPostCount] = useState<PostUserCount>()
+    const [viewLikeCount, setViewLikeCount] = useState<ViewLikeCount>()
     const options: any = [];
     for (let i = 0; i <= 10; i++) {
         const years = year - i;
@@ -34,6 +35,10 @@ function DashBoard() {
         adminServices.getpostcount().then((res) => {
             setUserPostCount(res);
         })
+        adminServices.getviewlikecount().then((res) => {
+            setViewLikeCount(res);
+        })
+
     }, [yearData]);
 
     const userTotal = (value: Count) => {
@@ -107,6 +112,80 @@ function DashBoard() {
         ]
     };
 
+    const apexOpts: any = {
+
+        chart: {
+            height: 450,
+            type: "bar",
+            foreColor: '#fff'
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false,
+                dataLabels: {
+                    position: "top"
+                }
+            }
+        },
+        dataLabels: {
+            enabled: false,
+            offsetX: -6,
+            style: {
+                fontSize: "12px",
+                colors: ["#fff"]
+            }
+        },
+
+
+        colors: ["#0acf97", "red"],
+        xaxis: {
+            categories: viewLikeCount?.user,
+            labels: {
+                show: true
+            },
+            axisTicks: {
+                show: false
+            },
+            axisBorder: {
+                show: false
+            }
+        },
+        // yaxis: {
+        //     show: true,
+        //     seriesName: [12, 121, 1233, 1213, 131],
+        //     showAlways: true,
+        //     labels: {
+        //         show: true
+        //     },
+        //     title: {
+        //         text: "Count"
+        //     }
+        // },
+
+        fill: {
+            type: "gradient",
+            gradient: {
+                inverseColors: !0,
+                shade: "light",
+                type: "horizontal",
+                shadeIntensity: 0.25,
+                gradientToColors: void 0,
+                opacityFrom: 1,
+                opacityTo: 1
+            }
+        }
+    };
+    const apexData :any= [
+        {
+            name: "Likes",
+            data: viewLikeCount?.likeCount
+        },
+        {
+            name: "Views",
+            data: viewLikeCount?.viewCount
+        }
+    ];
+
     const handleyear = (e) => {
         setYearData(e.target.value)
     }
@@ -144,20 +223,32 @@ function DashBoard() {
                         type="area"
                         height={350}
                     />
-                     <br></br>
-                     <br></br>
-                     <br></br>
+                    <br></br>
+                    <br></br>
+                    <br></br>
+                    <div className="bargraphs">
+                        <h1 style={{ color: "white", paddingTop: "35px" }}>User and their Post Count</h1>
+                        <Chart
+                            options={barstate.options}
+                            series={barstate.series}
+                            type="bar"
+                            width="500"
+                        />
 
+                    </div>
+
+                    <h1 style={{ color: "white", paddingTop: "35px" }}>Like View Total Count</h1>
                     <Chart
-                        options={barstate.options}
-                        series={barstate.series}
+                        options={apexOpts}
+                        series={apexData}
                         type="bar"
-                        width="500"
+                        height={500}
+                        className="apex-charts mt-2"
                     />
-                </div>
-                <div id="chart" >
 
                 </div>
+
+
             </div>
         </div>
 
