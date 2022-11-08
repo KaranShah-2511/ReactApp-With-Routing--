@@ -17,9 +17,49 @@ export type ViewLikeCount = {
     likeCount: number[];
     viewCount: number[];
 }
+export type DecadeData = {
+    months: string[];
+    count: number[];
+}
 export type SearchParam = {
     year: string;
 }
+export type TopUser = {
+    _id: string | number;
+    userId: string | number;
+    count: number;
+}
+export type HighestMonth = {
+    monthArry: number[]
+}
+
+export class HPRU extends MyModelEntity {
+    _id: string | number;
+    name: string;
+    email: string;
+    count: number;
+
+    constructor(data?: any) {
+        super(data);
+        if (data) {
+            this.objectAssign(this, data);
+        }
+    }
+}
+export class InactiveUser extends MyModelEntity {
+    // _id: string | number;
+    fullName: string;
+    email: string;
+    status: boolean;
+
+    constructor(data?: any) {
+        super(data);
+        if (data) {
+            this.objectAssign(this, data);
+        }
+    }
+}
+
 export class BlockPostReq extends MyModelEntity {
     _id: string | number;
     postId: string | number;
@@ -79,6 +119,60 @@ export class AdminService {
     getblockpostreq(): Promise<BlockPostReq[]> {
         return new Promise((resolve, reject) => {
             Http.get('admin/post/blockpost/req')
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    getdecadeData(): Promise<DecadeData> {
+        return new Promise((resolve, reject) => {
+            Http.get('admin/post/tenyear/report')
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    //getHPRU =>>  getHighestPostReportedUser
+    getHPRU(): Promise<HPRU[]> {
+        return new Promise((resolve, reject) => {
+            Http.get('admin/highestreported/user')
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    getInactiveUser(): Promise<InactiveUser[]> {
+        return new Promise((resolve, reject) => {
+            Http.get('admin/inactive/user')
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    getTopUserInDecade(params?: HighestMonth): Promise<TopUser[]> {
+        return new Promise((resolve, reject) => {
+
+            Http.post('admin/maxpost/tenyear/user',params)
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);

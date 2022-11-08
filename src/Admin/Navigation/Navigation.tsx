@@ -23,7 +23,7 @@ function Navigation() {
             <Link to="/">Dashboard</Link>
           </li>
           <li>
-            <Link to="/">AllUsers</Link>
+            <Link to="/allusers">AllUsers</Link>
           </li>
           <li>
             <Link to="/reports">Request</Link>

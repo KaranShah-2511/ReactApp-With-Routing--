@@ -36,6 +36,7 @@ export type CommentsParam = {
     parentCommentId: string | number;
     comment: string;
 }
+
 export class Post extends MyModelEntity {
 
     _id: string | number;

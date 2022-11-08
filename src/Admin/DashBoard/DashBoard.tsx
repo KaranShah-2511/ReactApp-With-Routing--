@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ReactApexChart from "react-apexcharts";
-import { AdminService, Count, PostUserCount, SearchParam, ViewLikeCount } from "../../Services/AdminServices";
+import { AdminService, Count, DecadeData, PostUserCount, SearchParam, TopUser, ViewLikeCount } from "../../Services/AdminServices";
 import Chart from "react-apexcharts";
 import './DashBoard.scss'
 
@@ -15,6 +15,8 @@ function DashBoard() {
     const [totalReports, setTotalReports] = useState<any>(0);
     const [userPostCount, setUserPostCount] = useState<PostUserCount>()
     const [viewLikeCount, setViewLikeCount] = useState<ViewLikeCount>()
+    const [tenYearData, setTenYearData] = useState<DecadeData>()
+    const [topUser, setTopUser] = useState<TopUser[]>([])
     const options: any = [];
     for (let i = 0; i <= 10; i++) {
         const years = year - i;
@@ -25,6 +27,8 @@ function DashBoard() {
         year: yearData
     }
     useEffect(() => {
+        console.log("I am Hit");
+        
         adminServices.getPostUserReportCount(param).then((res) => {
             setTotalUser(0)
             setTotalPost(0)
@@ -38,8 +42,26 @@ function DashBoard() {
         adminServices.getviewlikecount().then((res) => {
             setViewLikeCount(res);
         })
-
+        adminServices.getdecadeData().then((res) => {
+            setTenYearData(res);
+            getTopUser(res.count)
+        })
     }, [yearData]);
+
+    const getTopUser = (data) => {
+        const newData = data.filter(n => n > 100);
+        const monthArry: number[] = [];
+        newData.map((item) => {
+            const x = data.indexOf(item) + 1;
+            monthArry.push(x);
+        })
+        const param: any = {
+            "monthArry": monthArry
+        }
+        adminServices.getTopUserInDecade(param).then((data) => {
+            setTopUser(data);
+        })
+    }
 
     const userTotal = (value: Count) => {
         if (value.user.length && value.reportData.length && value.post.length) {
@@ -56,8 +78,6 @@ function DashBoard() {
             }
         }
     };
-
-
 
     const state: any = {
         series: [
@@ -111,6 +131,23 @@ function DashBoard() {
             }
         ]
     };
+    const decadeData: any = {
+        options: {
+            chart: {
+                id: "basic-bar",
+                foreColor: '#fff'
+            },
+            xaxis: {
+                categories: tenYearData?.months
+            }
+        },
+        series: [
+            {
+                name: "OverAll",
+                data: tenYearData?.count
+            }
+        ]
+    };
 
     const apexOpts: any = {
 
@@ -137,7 +174,7 @@ function DashBoard() {
         },
 
 
-        colors: ["#0acf97", "red"],
+        colors: ["#5D79FF", "#eee"],
         xaxis: {
             categories: viewLikeCount?.user,
             labels: {
@@ -150,32 +187,21 @@ function DashBoard() {
                 show: false
             }
         },
-        // yaxis: {
-        //     show: true,
-        //     seriesName: [12, 121, 1233, 1213, 131],
-        //     showAlways: true,
-        //     labels: {
-        //         show: true
-        //     },
-        //     title: {
-        //         text: "Count"
-        //     }
-        // },
-
-        fill: {
-            type: "gradient",
-            gradient: {
-                inverseColors: !0,
-                shade: "light",
-                type: "horizontal",
-                shadeIntensity: 0.25,
-                gradientToColors: void 0,
-                opacityFrom: 1,
-                opacityTo: 1
+        grid: {
+            row: {
+                colors: undefined,
+                opacity: 0.2
+            },
+            column: {
+                colors: undefined,
+                opacity: 0.2
             }
-        }
+        },
+        fill: {
+            opacity: 1
+        },
     };
-    const apexData :any= [
+    const apexData: any = [
         {
             name: "Likes",
             data: viewLikeCount?.likeCount
@@ -227,24 +253,67 @@ function DashBoard() {
                     <br></br>
                     <br></br>
                     <div className="bargraphs">
-                        <h1 style={{ color: "white", paddingTop: "35px" }}>User and their Post Count</h1>
-                        <Chart
-                            options={barstate.options}
-                            series={barstate.series}
-                            type="bar"
-                            width="500"
-                        />
+                        {/* <h1 style={{ color: "white", paddingTop: "35px" }}>User and their Post Count</h1> */}
+                        <div className="left-chart">
+                            <Chart
+                                options={barstate.options}
+                                series={barstate.series}
+                                type="bar"
+                                width="500"
+                            />
+                        </div>
+                        <div className="right-chart">
+                            {/* <Chart
+                                options={apexOpts}
+                                series={apexData}
+                                type="bar"
+                                height={500}
+                                className="apex-charts mt-2"
+                            /> */}
+                            <ReactApexChart
+                                options={apexOpts}
+                                series={apexData}
+                                type="bar"
+                                height={350}
+                            />
+                        </div>
 
                     </div>
 
-                    <h1 style={{ color: "white", paddingTop: "35px" }}>Like View Total Count</h1>
-                    <Chart
-                        options={apexOpts}
-                        series={apexData}
-                        type="bar"
-                        height={500}
-                        className="apex-charts mt-2"
-                    />
+                    <h1 style={{ color: "white", paddingTop: "35px" }}>10 Year Data</h1>
+                    <div className="ten-year">
+                        <div className="tenYear-bar">
+                            <Chart
+                                options={decadeData.options}
+                                series={decadeData.series}
+                                type="bar"
+                                width="500"
+                            />
+                        </div>
+                        <div className="top-User">
+                            {/* <h1 style={{ color: "white", paddingTop: "35px" }}>Top 10 Users</h1> */}
+                            {topUser.map((value, i) => {
+
+                                return (
+                                    <li key={i}>
+                                        <div className="top-user-div">
+                                            <div className="userId">
+                                                <h3>{value.userId}</h3>
+                                            </div>
+                                            <div className="top-user-count">
+                                                <h3>{value.count}</h3>
+                                            </div>
+                                        </div>
+                                    </li>
+
+                                )
+
+                            })}
+                        </div>
+                    </div>
+
+                    {/* <h1 style={{ color: "white", paddingTop: "35px" }}>Like View Total Count</h1> */}
+
 
                 </div>
 
