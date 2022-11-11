@@ -4,19 +4,10 @@ import { useParams } from "react-router";
 import { User } from "../../../Services/UserService";
 import { PostServices, Post, Comments } from "../../../Services/PostServices";
 import moment from "moment";
-import {
-  BsBookmarkPlus,
-  BsBookmarkPlusFill,
-  BsThreeDotsVertical,
-} from "react-icons/bs";
+import {BsBookmarkPlus,BsBookmarkPlusFill,BsThreeDotsVertical,} from "react-icons/bs";
 import { Auth } from "../../../Core/Services/AuthService";
 import { ToastContainer, Toast, Spinner } from "react-bootstrap";
-import {
-  AiFillDislike,
-  AiFillLike,
-  AiOutlineDislike,
-  AiOutlineLike,
-} from "react-icons/ai";
+import {AiFillDislike,AiFillLike,AiOutlineDislike,AiOutlineLike} from "react-icons/ai";
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -40,16 +31,13 @@ function ViewPost() {
   const [showError, setShowError] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [show, setShow] = useState(false);
-  console.log('show', show)
   const handleShowPopup = () => setShow(true);
   const open = Boolean(anchorEl);
   const userData: User = Auth.getUser();
   const navigate = useNavigate();
   const [comment, setComment] = useState<string>("");
   const [textboxId, setTextboxId] = useState<string | number>("");
-  const [highlightedComment, setHighlightedComment] = useState<string | number>(
-    ""
-  );
+  const [highlightedComment, setHighlightedComment] = useState<string | number>("");
   const [seeMore, setSeeMore] = useState<string | number>("");
   const [unlock, setUnlock] = useState(false);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {

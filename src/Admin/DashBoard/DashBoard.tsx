@@ -10,14 +10,14 @@ function DashBoard() {
     const [data, setData] = useState<Count>();
     const adminServices = new AdminService();
     const [yearData, setYearData] = useState(year);
-    const [totalUser, setTotalUser] = useState<any>(0);
-    const [totalPost, setTotalPost] = useState<any>(0);
-    const [totalReports, setTotalReports] = useState<any>(0);
+    const [total, setTotal] = useState<{ post: number, user: number, report: number }>({ post: 0, user: 0, report: 0 });
     const [userPostCount, setUserPostCount] = useState<PostUserCount>()
     const [viewLikeCount, setViewLikeCount] = useState<ViewLikeCount>()
     const [tenYearData, setTenYearData] = useState<DecadeData>()
     const [topUser, setTopUser] = useState<TopUser[]>([])
     const options: any = [];
+    console.log('total ', total)
+
     for (let i = 0; i <= 10; i++) {
         const years = year - i;
         options.push(<option value={years}>{years}</option>);
@@ -27,12 +27,8 @@ function DashBoard() {
         year: yearData
     }
     useEffect(() => {
-        console.log("I am Hit");
-        
         adminServices.getPostUserReportCount(param).then((res) => {
-            setTotalUser(0)
-            setTotalPost(0)
-            setTotalReports(0)
+            setTotal({ post: 0, user: 0, report: 0 })
             setData(res);
             userTotal(res)
         });
@@ -66,15 +62,9 @@ function DashBoard() {
     const userTotal = (value: Count) => {
         if (value.user.length && value.reportData.length && value.post.length) {
             for (let i = 0; i < 12; i++) {
-                setTotalUser((prevValues) => {
-                    return prevValues = prevValues + value.user[i]
-                });
-                setTotalPost((prevValues) => {
-                    return prevValues = prevValues + value.post[i]
-                });
-                setTotalReports((prevValues) => {
-                    return prevValues = prevValues + value.reportData[i]
-                });
+                setTotal((prevValues) => {
+                    return prevValues = { post: prevValues.post + value.post[i], user: prevValues.user + value.user[i], report: prevValues.report + value.reportData[i] }
+                })
             }
         }
     };
@@ -131,6 +121,7 @@ function DashBoard() {
             }
         ]
     };
+
     const decadeData: any = {
         options: {
             chart: {
@@ -201,6 +192,7 @@ function DashBoard() {
             opacity: 1
         },
     };
+
     const apexData: any = [
         {
             name: "Likes",
@@ -212,7 +204,7 @@ function DashBoard() {
         }
     ];
 
-    const handleyear = (e) => {
+    const handleyear = (e:any) => {
         setYearData(e.target.value)
     }
 
@@ -230,15 +222,15 @@ function DashBoard() {
                 <div className="count-div">
                     <div className="user-count">
                         <h3>Total Users</h3>
-                        <h1>{totalUser}</h1>
+                        <h1>{total.user}</h1>
                     </div>
                     <div className="post-count">
                         <h3>Total Posts</h3>
-                        <h1>{totalPost}</h1>
+                        <h1>{total.post}</h1>
                     </div>
                     <div className="report-count">
                         <h3>Total Reports</h3>
-                        <h1>{totalReports}</h1>
+                        <h1>{total.report}</h1>
                     </div>
                 </div>
 
@@ -263,13 +255,6 @@ function DashBoard() {
                             />
                         </div>
                         <div className="right-chart">
-                            {/* <Chart
-                                options={apexOpts}
-                                series={apexData}
-                                type="bar"
-                                height={500}
-                                className="apex-charts mt-2"
-                            /> */}
                             <ReactApexChart
                                 options={apexOpts}
                                 series={apexData}
@@ -277,7 +262,6 @@ function DashBoard() {
                                 height={350}
                             />
                         </div>
-
                     </div>
 
                     <h1 style={{ color: "white", paddingTop: "35px" }}>10 Year Data</h1>
@@ -305,25 +289,14 @@ function DashBoard() {
                                             </div>
                                         </div>
                                     </li>
-
                                 )
-
                             })}
                         </div>
                     </div>
-
-                    {/* <h1 style={{ color: "white", paddingTop: "35px" }}>Like View Total Count</h1> */}
-
-
                 </div>
-
-
             </div>
         </div>
-
-
     );
-
 }
 
 export default DashBoard;

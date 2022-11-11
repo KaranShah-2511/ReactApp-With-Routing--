@@ -44,6 +44,11 @@ const admin: RouteProps[] = [
     element: ViewPost,
     private: true,
   },
+  {
+    path: "/user/:userId",
+    element: Profile,
+    private: true,
+  },
 ]
 
 const app: RouteProps[] = [

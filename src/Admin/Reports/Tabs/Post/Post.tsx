@@ -27,7 +27,7 @@ function Post() {
             <th>Number</th>
             <th>Name</th>
             <th>Email</th>
-            <th>PostId</th>
+            <th>Message</th>
             <th></th>
           </tr>
         </thead>
@@ -38,7 +38,7 @@ function Post() {
                 <td>{index + 1}</td>
                 <td>{item.name}</td>
                 <td>{item.email}</td>
-                <td>{item.postId}</td>
+                <td>{item.ReqDescription}</td>
                 <td>
                   <Button onClick={() => viewPost(item.postId)}>Open </Button>
                 </td>
