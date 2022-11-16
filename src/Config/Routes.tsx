@@ -40,7 +40,7 @@ const admin: RouteProps[] = [
     private: true
   },
   {
-    path: "/post/:postId",
+    path: "req/:reqId/post/:postId",
     element: ViewPost,
     private: true,
   },

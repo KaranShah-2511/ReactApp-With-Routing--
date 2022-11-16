@@ -11,11 +11,9 @@ function HighestReport() {
   const navigate = useNavigate();
   useEffect(() => {
     adminServices.getHPRU().then((res) => {
-        setData(res)
-      })
+      setData(res)
+    })
   }, []);
-
-
 
   return (
     <div>
@@ -38,7 +36,9 @@ function HighestReport() {
                 <td>{item.email}</td>
                 <td>{item.count}</td>
                 <td>
-                  <Button >Open </Button>
+                  <Button onClick={() =>
+                    navigate(`/user/${item.userId}`, { replace: true })
+                  }>Open </Button>
                 </td>
               </tr>
             )

@@ -15,8 +15,8 @@ function Post() {
   }, []);
   console.table(data)
 
-  const viewPost = (id) => {
-    navigate(`/post/${id}`, { replace: true });
+  const viewPost = (reqId, postId) => {
+    navigate(`/req/${reqId}/post/${postId}`, { replace: true });
   }
 
   return (
@@ -40,7 +40,7 @@ function Post() {
                 <td>{item.email}</td>
                 <td>{item.ReqDescription}</td>
                 <td>
-                  <Button onClick={() => viewPost(item.postId)}>Open </Button>
+                  <Button onClick={() => viewPost(item._id, item.postId)}>Open </Button>
                 </td>
               </tr>
             )

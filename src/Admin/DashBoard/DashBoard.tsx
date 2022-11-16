@@ -16,7 +16,6 @@ function DashBoard() {
     const [tenYearData, setTenYearData] = useState<DecadeData>()
     const [topUser, setTopUser] = useState<TopUser[]>([])
     const options: any = [];
-    console.log('total ', total)
 
     for (let i = 0; i <= 10; i++) {
         const years = year - i;
@@ -32,6 +31,9 @@ function DashBoard() {
             setData(res);
             userTotal(res)
         });
+    }, [yearData]);
+
+    useEffect(() => {
         adminServices.getpostcount().then((res) => {
             setUserPostCount(res);
         })
@@ -42,7 +44,7 @@ function DashBoard() {
             setTenYearData(res);
             getTopUser(res.count)
         })
-    }, [yearData]);
+    }, []);
 
     const getTopUser = (data) => {
         const newData = data.filter(n => n > 100);
@@ -204,7 +206,7 @@ function DashBoard() {
         }
     ];
 
-    const handleyear = (e:any) => {
+    const handleyear = (e: any) => {
         setYearData(e.target.value)
     }
 

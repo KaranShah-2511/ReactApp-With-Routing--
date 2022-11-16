@@ -38,6 +38,7 @@ export class HPRU extends MyModelEntity {
     name: string;
     email: string;
     count: number;
+    userId: string | number;
 
     constructor(data?: any) {
         super(data);
@@ -172,7 +173,21 @@ export class AdminService {
     getTopUserInDecade(params?: HighestMonth): Promise<TopUser[]> {
         return new Promise((resolve, reject) => {
 
-            Http.post('admin/maxpost/tenyear/user',params)
+            Http.post('admin/maxpost/tenyear/user', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    deleteOpenRequest(id: string | number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const url = ['admin/openpost/req', id].join('/');
+            Http.delete(url)
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);

@@ -4,10 +4,10 @@ import { useParams } from "react-router";
 import { User } from "../../../Services/UserService";
 import { PostServices, Post, Comments } from "../../../Services/PostServices";
 import moment from "moment";
-import {BsBookmarkPlus,BsBookmarkPlusFill,BsThreeDotsVertical,} from "react-icons/bs";
+import { BsBookmarkPlus, BsBookmarkPlusFill, BsThreeDotsVertical, } from "react-icons/bs";
 import { Auth } from "../../../Core/Services/AuthService";
 import { ToastContainer, Toast, Spinner } from "react-bootstrap";
-import {AiFillDislike,AiFillLike,AiOutlineDislike,AiOutlineLike} from "react-icons/ai";
+import { AiFillDislike, AiFillLike, AiOutlineDislike, AiOutlineLike } from "react-icons/ai";
 import Box from "@mui/material/Box";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -16,13 +16,13 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import Button from "react-bootstrap/Button";
 import ReplyIcon from "@mui/icons-material/Reply";
+import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { ReportPopup } from "../../../Model";
 import "./ViewPost.scss";
+import { AdminService } from "../../../Services/AdminServices";
 
 function ViewPost() {
-  const postId: any = useParams().postId;
   const [post, setPost] = useState<Post>();
-  const postServices = new PostServices();
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [comments, setComments] = useState<Comments[]>([]);
   const [isLiked, setIsLiked] = useState(0);
@@ -31,21 +31,28 @@ function ViewPost() {
   const [showError, setShowError] = useState<string | null>(null);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [show, setShow] = useState(false);
-  const handleShowPopup = () => setShow(true);
-  const open = Boolean(anchorEl);
-  const userData: User = Auth.getUser();
-  const navigate = useNavigate();
   const [comment, setComment] = useState<string>("");
   const [textboxId, setTextboxId] = useState<string | number>("");
   const [highlightedComment, setHighlightedComment] = useState<string | number>("");
   const [seeMore, setSeeMore] = useState<string | number>("");
   const [unlock, setUnlock] = useState(false);
+  const [checked, setChecked] = useState<boolean>();
+  const postId: any = useParams().postId;
+  const reqId: any = useParams().reqId;
+  const postServices = new PostServices();
+  const adminServices = new AdminService();
+  const userData: User = Auth.getUser();
+  const open = Boolean(anchorEl);
+  const navigate = useNavigate();
+  const handleShowPopup = () => setShow(true);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+  console.log('reqId', reqId)
   const handleClose = () => {
     setAnchorEl(null);
   };
+  console.log('checked', checked)
 
   const showPopup = () => {
     setShow(true);
@@ -53,8 +60,10 @@ function ViewPost() {
   };
   useEffect(() => {
     if (postId) {
-      postServices.getSinglePost(postId).then((res: any) => {
+      postServices.getSinglePost(postId).then((res: Post) => {
         setPost(res);
+        setChecked(res.status)
+        console.log('res.status', res.status)
         setIsBookmarked(res.isBookmarked);
         if (res.isLiked == 1) {
           setIsLiked(1);
@@ -160,6 +169,15 @@ function ViewPost() {
     }
   };
 
+  const switchHandler = (event) => {
+    setChecked(event.target.checked);
+  };
+  const deleteReq = async () => {
+    await adminServices.deleteOpenRequest(reqId).then((res) => {
+      navigate("/reports", { replace: true });
+    })
+  };
+
   return (
     <div className="post-view">
       <ToastContainer className="p-3" position="top-center">
@@ -191,6 +209,11 @@ function ViewPost() {
         </Toast>
       </ToastContainer>
       <div className="post-view__title">
+        {/* <div className="status">
+          <FormGroup>
+            <FormControlLabel control={<Switch checked={checked} onChange={switchHandler} />} label="Post Status" />
+          </FormGroup>
+        </div> */}
         <div className="title">
           <h1>{post?.title}</h1>
         </div>
@@ -265,7 +288,7 @@ function ViewPost() {
                   <MenuItem onClick={() => deltePost(post._id)}>
                     Delete
                   </MenuItem>
-                  {!post.status ?
+                  {post.blocked ?
                     <MenuItem onClick={showPopup}>
                       Open Report Request
                     </MenuItem>
@@ -296,30 +319,42 @@ function ViewPost() {
         </div>
 
         <div className="like-bookmark">
-          <div className="like-dislike">
-            <div className="like">
-              {isLiked == 1 ? (
-                <AiFillLike onClick={() => likepost(post?._id, 0)} />
-              ) : (
-                <AiOutlineLike onClick={() => likepost(post?._id, 1)} />
-              )}
-            </div>
-            <div className="dislike">
-              {isDisLiked == -1 ? (
-                <AiFillDislike onClick={() => likepost(post?._id, 0)} />
-              ) : (
-                <AiOutlineDislike onClick={() => likepost(post?._id, -1)} />
-              )}
-            </div>
-          </div>
+          {(userData.UserType === "Admin") ?
+            <>
+              <FormGroup>
+                <FormControlLabel control={<Switch checked={checked} onChange={switchHandler} />} label="Post Status" />
+              </FormGroup>
+              <Button variant='danger' onClick={deleteReq}>Delete </Button>
+            </>
+            :
+            <>
+              <div className="like-dislike">
+                <div className="like">
+                  {isLiked == 1 ? (
+                    <AiFillLike onClick={() => likepost(post?._id, 0)} />
+                  ) : (
+                    <AiOutlineLike onClick={() => likepost(post?._id, 1)} />
+                  )}
+                </div>
+                <div className="dislike">
+                  {isDisLiked == -1 ? (
+                    <AiFillDislike onClick={() => likepost(post?._id, 0)} />
+                  ) : (
+                    <AiOutlineDislike onClick={() => likepost(post?._id, -1)} />
+                  )}
+                </div>
+              </div>
 
-          <div className="bookmark">
-            {isBookmarked ? (
-              <BsBookmarkPlusFill onClick={() => bookmark(post?._id, false)} />
-            ) : (
-              <BsBookmarkPlus onClick={() => bookmark(post?._id, true)} />
-            )}
-          </div>
+              <div className="bookmark">
+                {isBookmarked ? (
+                  <BsBookmarkPlusFill onClick={() => bookmark(post?._id, false)} />
+                ) : (
+                  <BsBookmarkPlus onClick={() => bookmark(post?._id, true)} />
+                )}
+              </div>
+            </>
+          }
+
         </div>
       </div>
       <div className="post-image">
