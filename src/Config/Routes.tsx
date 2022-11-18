@@ -9,7 +9,7 @@ import {
   ViewPost,
 } from "../Component";
 import { NotFound } from "../Component/Error";
-import { AdminDashBoard, AdminReport, AdminUserList } from "../Admin";
+import { AdminDashBoard, AdminRequest, AdminUserList } from "../Admin";
 
 const comman: RouteProps[] = [
   {
@@ -31,7 +31,7 @@ const admin: RouteProps[] = [
   },
   {
     path: "/reports/*",
-    element: AdminReport,
+    element: AdminRequest,
     private: true
   },
   {

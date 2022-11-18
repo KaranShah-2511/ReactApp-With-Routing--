@@ -1,9 +1,10 @@
 import React from 'react'
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
+import Account from './Tabs/Account';
 import Post from './Tabs/Post';
 
-function Report() {
+function Request() {
     return (
         <div>
             <Tabs
@@ -16,7 +17,7 @@ function Report() {
                     <Post />
                 </Tab>
                 <Tab eventKey="account" title="Account">
-                    Account
+                    <Account />
                 </Tab>
 
             </Tabs>
@@ -24,4 +25,4 @@ function Report() {
     )
 }
 
-export default Report
+export default Request

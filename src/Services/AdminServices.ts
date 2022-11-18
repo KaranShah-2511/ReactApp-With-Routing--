@@ -76,6 +76,21 @@ export class BlockPostReq extends MyModelEntity {
         }
     }
 }
+export class BlockAccountReq extends MyModelEntity {
+    _id : string | number;
+    name : string ;
+    email : string ;
+    accountId : string | number ;
+    type : string ;
+    ReqDescription : string ;
+
+    constructor(data?: any) {
+        super(data);
+        if (data) {
+            this.objectAssign(this, data);
+        }
+    }
+}
 export class AdminService {
 
     getPostUserReportCount(params?: SearchParam): Promise<Count> {
@@ -120,6 +135,19 @@ export class AdminService {
     getblockpostreq(): Promise<BlockPostReq[]> {
         return new Promise((resolve, reject) => {
             Http.get('admin/post/blockpost/req')
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    getblockAccountreq(): Promise<BlockAccountReq[]> {
+        return new Promise((resolve, reject) => {
+            Http.get('admin/post/blockaccount/req')
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);

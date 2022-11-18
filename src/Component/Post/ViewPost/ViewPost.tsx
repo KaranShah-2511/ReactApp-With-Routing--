@@ -42,6 +42,7 @@ function ViewPost() {
   const postServices = new PostServices();
   const adminServices = new AdminService();
   const userData: User = Auth.getUser();
+  console.log('check', Auth.isAuthorized())
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const handleShowPopup = () => setShow(true);
