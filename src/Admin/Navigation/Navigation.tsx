@@ -28,6 +28,9 @@ function Navigation() {
           <li>
             <Link to="/reports">Request</Link>
           </li>
+          <li>
+            <Link to="/">Reports</Link>
+          </li>
         </ul>
       </div>
       <div className="menu">

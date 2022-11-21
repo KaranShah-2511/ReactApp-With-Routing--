@@ -47,6 +47,21 @@ export class HPRU extends MyModelEntity {
         }
     }
 }
+export class User extends MyModelEntity {
+    _id: string | number;
+    fullName: string;
+    email: string;
+    userType: string;
+    status: boolean;
+    created: string;
+
+    constructor(data?: any) {
+        super(data);
+        if (data) {
+            this.objectAssign(this, data);
+        }
+    }
+}
 export class InactiveUser extends MyModelEntity {
     // _id: string | number;
     fullName: string;
@@ -77,12 +92,12 @@ export class BlockPostReq extends MyModelEntity {
     }
 }
 export class BlockAccountReq extends MyModelEntity {
-    _id : string | number;
-    name : string ;
-    email : string ;
-    accountId : string | number ;
-    type : string ;
-    ReqDescription : string ;
+    _id: string | number;
+    name: string;
+    email: string;
+    accountId: string | number;
+    type: string;
+    ReqDescription: string;
 
     constructor(data?: any) {
         super(data);
@@ -92,6 +107,21 @@ export class BlockAccountReq extends MyModelEntity {
     }
 }
 export class AdminService {
+
+    getAllUser(params?: {Searchby:string}): Promise<User[]> {
+        return new Promise((resolve, reject) => {
+            Http.post('admin', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+
 
     getPostUserReportCount(params?: SearchParam): Promise<Count> {
         return new Promise((resolve, reject) => {
