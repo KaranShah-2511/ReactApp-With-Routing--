@@ -66,7 +66,7 @@ const HttpService = (function () {
     }
 
     let _CONFIG: AxiosRequestConfig = {
-        baseURL: process.env.REACT_APP_API_ENDPOINT || '',
+        baseURL: process.env.REACT_APP_API_ENDPOINT,
         timeout: Number(process.env.REACT_APP_API_TIMEOUT) || 0,
         transformRequest: transformRequest,
         // transformResponse: transformResponse,
