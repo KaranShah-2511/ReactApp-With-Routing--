@@ -62,6 +62,11 @@ const app: RouteProps[] = [
     element: lazy(() => import("../Component/Login/Login")),
     isAuthTo: "/",
   },
+  {
+    path: "/signup",
+    element: lazy(() => import("../Component/SignUp/SignUp")),
+    isAuthTo: "/",
+  },
 
   //module routs
 
