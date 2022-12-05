@@ -10,7 +10,7 @@
     background-size: cover;
 
     .login-box {
-        height: 50%;
+        // height: 50%;
         width: 30%;
         background-color: aqua;
 
@@ -20,10 +20,10 @@
             padding: 20px;
         }
 
-        .login-button {
-            float: right;
-            margin-top: 35px;
-        }
+        // .login-button {
+        //     float: right;
+        //     margin-top: 35px;
+        // }
     }
 
     .password-field {
@@ -46,4 +46,9 @@
         }
     }
 
+}
+
+.SignUp {
+   padding-top: 20px;
+   cursor: pointer;
 }

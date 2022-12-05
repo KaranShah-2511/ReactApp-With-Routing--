@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Formik } from 'formik';
 import * as yup from 'yup';
-import { LoginParam, UserService } from '../../Services/UserService';
+import { LoginParam, SignUpParam, UserService } from '../../Services/UserService';
 import { Col, Form, Row, Button, Spinner, ToastContainer, Toast } from 'react-bootstrap';
 import { BsEye, BsEyeSlash } from "react-icons/bs";
 import { Auth } from '../../Core/Services/AuthService';
@@ -100,13 +100,18 @@ function Login() {
                   Login to Continue
                   {(isSubmitting) ? <Spinner className="spinner" animation="border" size="sm" /> : null}
                 </Button>
+                <div className='SignUp'>
+                  <p>
+                    Don't have an account? <a href='/signup'>Sign Up</a>
+                  </p>
 
+                </div>
               </Form>
 
             )}
           </Formik>
         </Col>
-     
+
       </Row>
 
     </div>
@@ -114,3 +119,5 @@ function Login() {
 }
 
 export default Login
+
+

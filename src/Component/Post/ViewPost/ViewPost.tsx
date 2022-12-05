@@ -42,18 +42,15 @@ function ViewPost() {
   const postServices = new PostServices();
   const adminServices = new AdminService();
   const userData: User = Auth.getUser();
-  console.log('check', Auth.isAuthorized())
   const open = Boolean(anchorEl);
   const navigate = useNavigate();
   const handleShowPopup = () => setShow(true);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-  console.log('reqId', reqId)
   const handleClose = () => {
     setAnchorEl(null);
   };
-  console.log('checked', checked)
 
   const showPopup = () => {
     setShow(true);
@@ -64,7 +61,6 @@ function ViewPost() {
       postServices.getSinglePost(postId).then((res: Post) => {
         setPost(res);
         setChecked(res.status)
-        console.log('res.status', res.status)
         setIsBookmarked(res.isBookmarked);
         if (res.isLiked == 1) {
           setIsLiked(1);

@@ -8,6 +8,11 @@ export type LoginParam = {
     email: string;
     password: string;
 }
+export type SignUpParam = {
+    email: string;
+    password: string;
+    fullName:string;
+}
 
 
 export class Notification  extends MyModelEntity  {
@@ -35,6 +40,8 @@ export class User extends MyModelEntity {
     Token?: string;
     UserType?: string;
 
+    
+
     constructor(data?: any) {
         super(data);
         if (data) {
@@ -49,6 +56,20 @@ export class UserService {
         console.log('params', params)
         return new Promise((resolve, reject) => {
             Http.post('/user/sign_in', params)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    signUp(params: SignUpParam): Promise<any> {
+        console.log('params', params)
+        return new Promise((resolve, reject) => {
+            Http.post('/user/register', params)
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);
