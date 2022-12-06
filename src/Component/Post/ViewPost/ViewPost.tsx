@@ -168,6 +168,14 @@ function ViewPost() {
 
   const switchHandler = (event) => {
     setChecked(event.target.checked);
+    const param:any = {
+      status : !checked
+    }
+
+    adminServices.updatePostStatus(param,postId).then((res) => {
+      console.log('res', res)
+    } 
+    )
   };
   const deleteReq = async () => {
     await adminServices.deleteOpenRequest(reqId).then((res) => {
