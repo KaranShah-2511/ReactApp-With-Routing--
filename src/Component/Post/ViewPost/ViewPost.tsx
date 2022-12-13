@@ -20,6 +20,9 @@ import { FormControlLabel, FormGroup, Switch } from '@mui/material';
 import { ReportPopup } from "../../../Model";
 import "./ViewPost.scss";
 import { AdminService } from "../../../Services/AdminServices";
+import * as io from "socket.io-client";
+
+const socket = io.connect(`${process.env.REACT_APP_API_ENDPOINT}`);
 
 function ViewPost() {
   const [post, setPost] = useState<Post>();
@@ -56,8 +59,15 @@ function ViewPost() {
     setShow(true);
     setUnlock(true);
   };
+  const joinRoom = () => {
+    if (postId != '') {
+      socket.emit("postId_connect", postId);
+    }
+    return true
+  };
   useEffect(() => {
-    if (postId) {
+    if (postId) {  
+      joinRoom()
       postServices.getSinglePost(postId).then((res: Post) => {
         setPost(res);
         setChecked(res.status)
@@ -71,6 +81,14 @@ function ViewPost() {
       allPostComments();
     }
   }, []);
+
+  useEffect(() => {
+    socket.on("receive_comment", (data) => {
+      // setMessageReceived(data.message);
+      allPostComments();
+      console.log('messageReceived')
+    });
+  }, [socket]);
 
   const allPostComments = () => {
     postServices.getComments(postId).then((res: any) => {
@@ -145,6 +163,7 @@ function ViewPost() {
   ) => {
     if (comment) {
       const payload: any = {
+        postId:postId,
         userId: userData.id,
         parentId: parentId ? parentId : postId,
         comment: comment,
@@ -153,6 +172,7 @@ function ViewPost() {
         payload.parentCommentId = parentCommentId;
       }
       // console.log('payload', payload)
+      socket.emit("send_comment",  payload);
       postServices
         .createComments(payload)
         .then((res) => {
