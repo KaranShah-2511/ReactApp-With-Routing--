@@ -108,7 +108,7 @@ export class BlockAccountReq extends MyModelEntity {
 }
 export class AdminService {
 
-    getAllUser(params?: {Searchby:string}): Promise<User[]> {
+    getAllUser(params?: { Searchby: string }): Promise<User[]> {
         return new Promise((resolve, reject) => {
             Http.post('admin', params)
                 .then((res) => {
@@ -246,6 +246,20 @@ export class AdminService {
         return new Promise((resolve, reject) => {
             const url = ['admin/openpost/req', id].join('/');
             Http.delete(url)
+                .then((res) => {
+                    if (res.data.code === "200" && res.data.flag === true) {
+                        resolve(res.data.data);
+                    } else {
+                        reject(res.data);
+                    }
+                })
+                .catch((e) => reject(e));
+        });
+    }
+    updatePostStatus(params: { status: boolean }, id: string | number): Promise<any> {
+        return new Promise((resolve, reject) => {
+            const url = ['admin/repotedpost', id].join('/');
+            Http.post(url,params)
                 .then((res) => {
                     if (res.data.code === "200" && res.data.flag === true) {
                         resolve(res.data.data);

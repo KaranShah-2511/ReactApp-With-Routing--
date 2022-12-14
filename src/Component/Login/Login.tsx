@@ -18,6 +18,7 @@ function Login() {
   const onPasswordVisiblity = () => {
     setShowPassword(!showPassword);
   };
+  const [showError, setShowError] = useState<string | null>(null);
 
 
   const getInitialValues = () => {
@@ -42,6 +43,7 @@ function Login() {
       })
       .catch((e) => {
         console.log('e', e)
+        setShowError(e.response.data.message)
       });
   };
 
@@ -60,6 +62,20 @@ function Login() {
 
   return (
     <div className='login-container'>
+        <ToastContainer className="p-3" position="top-center">
+        <Toast
+          onClose={() => setShowError(null)}
+          bg="danger"
+          show={!!showError}
+          delay={3000}
+          autohide
+        >
+          <Toast.Header closeButton={true}>
+            <strong className="me-auto">Error</strong>
+          </Toast.Header>
+          <Toast.Body style={{color:"white"}}>{showError}</Toast.Body>
+        </Toast>
+      </ToastContainer>
       <Row className='shadow p-3 mb-5 bg-white rounded login-box'>
         <Col className='login'>
           <Formik {...formlik}>
